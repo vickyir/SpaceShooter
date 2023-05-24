@@ -9,13 +9,20 @@ import SwiftUI
 import SpriteKit
 import GameKit
 
-class GameScene: SKScene, SKPhysicsContactDelegate{
+class GameScene: SKScene, SKPhysicsContactDelegate, ObservableObject{
     let background = SKSpriteNode(imageNamed: "bg")
     var player = SKSpriteNode()
     var playerFire = SKSpriteNode()
     var fireTimer = Timer()
     var enemyTimer = Timer()
     var enemy = SKSpriteNode()
+    
+    @Published var gameOver = false
+    
+    var liveArray = [SKSpriteNode]()
+    
+    var score = 0
+    var scoreLabel = SKLabelNode()
     
     struct CBitmask{
         static let playerShip: UInt32 = 0b1
@@ -34,11 +41,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         background.setScale(0.59)
         background.zPosition = 1
         addChild(background)
-        makePlayer(playerCh: 1)
+        makePlayer(playerCh: shipChoice.integer(forKey: "playerChoice"))
         
         fireTimer = .scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(playerFireAction), userInfo: nil, repeats: true)
         
         enemyTimer = .scheduledTimer(timeInterval: 1, target: self, selector: #selector(makeEnemys), userInfo: nil, repeats: true)
+        
+        scoreLabel.text = "Score: \(score)"
+        scoreLabel.fontName = "Chalkduster"
+        scoreLabel.fontSize = 50
+        scoreLabel.fontColor = .red
+        scoreLabel.zPosition = 10
+        scoreLabel.position = CGPoint(x: size.width/2, y: size.height/1.15)
+        addChild(scoreLabel)
+        addLives(lives: 3)
         
     }
     
@@ -54,12 +70,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             contactB = contact.bodyA
         }
         
+//        PlayerFire Hit Enemy
         if contactA.categoryBitMask == CBitmask.playerFire && contactB.categoryBitMask == CBitmask.enemyShip{
+            updateScore()
+            
             playerFireHitEnemy(fires: contactA.node as! SKSpriteNode, enemys: contactB.node as! SKSpriteNode)
         }
         
+//        enemy hit player
         if contactA.categoryBitMask == CBitmask.playerShip && contactB.categoryBitMask == CBitmask.enemyShip{
-            playerHitEnemy(players: contactA.node as! SKSpriteNode, enemys: contactB.node as! SKSpriteNode)
+            
+            player.run(SKAction.repeat(SKAction.sequence([SKAction.fadeOut(withDuration: 0.1), SKAction.fadeIn(withDuration: 0.1)]), count: 8))
+            
+            if let live1 = childNode(withName: "live1"){
+                live1.removeFromParent()
+            }else if let live2 =  childNode(withName: "live2"){
+                live2.removeFromParent()
+            }else if let live3 = childNode(withName: "live3"){
+                live3.removeFromParent()
+                player.removeFromParent()
+                fireTimer.invalidate()
+                enemyTimer.invalidate()
+                SoundManager.instance.StopSoundFire()
+                gameOverFunc()
+            }
+            
+//            playerHitEnemy(players: contactA.node as! SKSpriteNode, enemys: contactB.node as! SKSpriteNode)
         }
     }
     
@@ -84,6 +120,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         explo?.position = enemys.position
         explo?.zPosition = 5
         addChild(explo!)
+    }
+    
+    func addLives(lives: Int){
+        for i in 1...lives{
+            let live = SKSpriteNode(imageNamed: "health")
+            live.setScale(0.1)
+            live.position = CGPoint(x: CGFloat(i)*live.size.width+10, y: size.height - live.size.height-10)
+            live.zPosition = 10
+            live.name = "live\(i)"
+            liveArray.append(live)
+            
+            addChild(live)
+        }
     }
     
     func makePlayer(playerCh: Int){
@@ -128,6 +177,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         let delateAction = SKAction.removeFromParent()
         let combine = SKAction.sequence([moveAction, delateAction])
         
+        SoundManager.instance.PlaySoundFire()
         playerFire.run(combine)
     }
     
@@ -140,7 +190,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         enemy.physicsBody?.affectedByGravity = false
         enemy.physicsBody?.categoryBitMask = CBitmask.enemyShip
         enemy.physicsBody?.contactTestBitMask = CBitmask.playerShip | CBitmask.playerFire
-        enemy.physicsBody?.collisionBitMask = CBitmask.playerFire | CBitmask.playerFire
+        enemy.physicsBody?.collisionBitMask = CBitmask.playerShip | CBitmask.playerFire
         addChild(enemy)
         
         let moveAction = SKAction.moveTo(y: -100, duration: 2)
@@ -152,6 +202,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
     }
     
+    func updateScore(){
+        score += 1
+        
+        scoreLabel.text = "Score: \(score)"
+    }
+    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
@@ -159,14 +215,47 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             player.position.x = location.x
         }
     }
+    
+    func gameOverFunc(){
+        removeAllChildren()
+        gameOver = true
+        
+        let gameOverLabel =  SKLabelNode()
+        gameOverLabel.text = "Game Over"
+        gameOverLabel.fontSize = 90
+        gameOverLabel.position = CGPoint(x: size.width/2, y: size.height/1.9)
+        gameOverLabel.fontColor = UIColor.red
+        
+        addChild(gameOverLabel)
+    }
 }
 
 struct ContentView: View {
-    let scene = GameScene()
+   @ObservedObject var scene = GameScene()
     
     var body: some View {
-        SpriteView(scene: scene)
-            .ignoresSafeArea()
+        NavigationView{
+            HStack{
+                ZStack{
+                    SpriteView(scene: scene)
+                        .ignoresSafeArea()
+                    
+                    if scene.gameOver == true{
+                        NavigationLink{
+                            HomeView().navigationBarHidden(true).navigationBarBackButtonHidden(true)
+                        }label: {
+                            Text("Back To Start")
+                                .foregroundColor(.white)
+                                .padding()
+                        }
+                    }
+                    
+                    
+                }
+            }
+            
+        }
+        
 
     }
 }

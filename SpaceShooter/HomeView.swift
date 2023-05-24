@@ -6,81 +6,116 @@
 //
 
 import SwiftUI
+import SpriteKit
+
+var shipChoice = UserDefaults.standard
 
 struct HomeView: View {
-    @State var changeScreen = false
     var body: some View {
-        
-        return Group{
-            if changeScreen{
-                ContentView()
-            }else{
-                VStack(spacing: 0.0){
-                    Text("SPACE SHOOTER")
-                        .font(.system(size: 40, weight: .bold, design: .monospaced))
-                        .foregroundColor(Color.brown)
-                        .shadow(radius: 5, x: 2, y: 4)
-                        .padding(.top, 20)
-                    GeometryReader{
-                        geo in
-                        
-                        Button(action: {
-                            withAnimation{
-                                self.changeScreen = true
-                            }
-                        }, label: {
-                            ZStack{
-                                Image("btn")
-                                Text("Play Game")
-                                    .foregroundColor(Color.brown)
-                                    .font(.system(size: 32, weight: .semibold, design: .monospaced))
-                                    .padding(.top, -14)
-                                    .shadow(radius: 5, x: 2, y: 4)
-                            }
-                        })
-                        .position(x: geo.size.width/2, y: geo.size.height/5)
-                        
-                        Button(action: {
-                            print("Test")
-                        }, label: {
-                            ZStack{
-                                Image("btn")
-                                Text("Settings")
-                                    .foregroundColor(Color.brown)
-                                    .font(.system(size: 32, weight: .semibold, design: .monospaced))
-                                    .padding(.top, -14)
-                                    .shadow(radius: 5, x: 2, y: 4)
-                            }
-                        })
-                        .position(x: geo.size.width/2, y: geo.size.height/2.5)
-                        
-                        Button(action: {
-                            print("Test")
-                        }, label: {
-                            ZStack{
-                                Image("btn")
-                                Text("Quit Game")
-                                    .foregroundColor(Color.brown)
-                                    .font(.system(size: 32, weight: .semibold, design: .monospaced))
-                                    .padding(.top, -14)
-                                    .shadow(radius: 5, x: 2, y: 4)
-                            }
-                        })
-                        .position(x: geo.size.width/2, y: geo.size.height/1.65)
-                        
+        NavigationView{
+            ZStack{
+                VStack{
+                    Spacer()
+                    
+                    Text("IR Shooter")
+                        .font(.custom("Chalkduster", size: 45))
+                        .fontWeight(.bold)
+                    Spacer()
+                    NavigationLink{
+                        ContentView().navigationBarBackButtonHidden(true).navigationBarBackButtonHidden(true)
+                    }label: {
+                        ZStack{
+                            Image("btn")
+                            Text("Start Game")
+                                .font(.custom("Chalkduster", size: 32))
+                                .foregroundColor(.white)
+                                .padding(.top, -10)
+                        }
+                      
                     }
-                    .padding(.top, -50)
+                    Spacer()
                     
+                    VStack{
+                        Text("Choose your Ship")
+                            .font(.custom("Chalkduster", size: 25))
+                            .fontWeight(.bold)
+                        HStack(spacing: 0.0){
+                            Button(action: {
+                                makePlayerChoice()
+                            }, label: {
+                                ZStack{
+                                    Image("btn")
+                                        .resizable()
+                                        .scaledToFit()
+                                    
+                                    Text("Ship 1")
+                                        .font(.custom("Chalkduster", size: 12))
+                                        .foregroundColor(.white)
+                                        .padding(.top, -8)
+                                }
+                               
+                            })
+                            .padding()
+                            
+                            Button(action: {
+                                makePlayerChoice2()
+                            }, label: {
+                                ZStack{
+                                    Image("btn")
+                                        .resizable()
+                                        .scaledToFit()
+                                    
+                                    Text("Ship 2")
+                                        .font(.custom("Chalkduster", size: 12))
+                                        .foregroundColor(.white)
+                                        .padding(.top, -8)
+                                }
+                            })
+                            .padding()
+                            
+                            Button(action: {
+                                makePlayerChoice3()
+                            }, label: {
+                                ZStack{
+                                    Image("btn")
+                                        .resizable()
+                                        .scaledToFit()
+                                    
+                                    Text("Ship 3")
+                                        .font(.custom("Chalkduster", size: 12))
+                                        .foregroundColor(.white)
+                                        .padding(.top, -8)
+                                }
+                            })
+                            .padding()
+                            
+                            
+                        }
+                    }
                     
-                    
+                    Spacer()
                 }
-                .background(
-                    Image("bg")
-                )
             }
+            .frame(alignment: .center)
+            .background(Image("bg"))
+            .ignoresSafeArea()
+        }
+        .onAppear{
+            SoundManager.instance.PlaySound()
         }
         
-        
+    }
+    
+    func makePlayerChoice(){
+        shipChoice.setValue(1, forKey: "playerChoice")
+    }
+    
+    func makePlayerChoice2(){
+        shipChoice.setValue(2, forKey: "playerChoice")
+    }
+    
+    func makePlayerChoice3(){
+        shipChoice.setValue(3, forKey: "playerChoice")
     }
 }
 
