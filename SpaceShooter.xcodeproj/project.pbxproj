@@ -11,6 +11,8 @@
 		CCDE1D4F2A1D622C00958FDD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDE1D4E2A1D622C00958FDD /* ContentView.swift */; };
 		CCDE1D512A1D622D00958FDD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CCDE1D502A1D622D00958FDD /* Assets.xcassets */; };
 		CCDE1D542A1D622D00958FDD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CCDE1D532A1D622D00958FDD /* Preview Assets.xcassets */; };
+		CCDE1D5B2A1D7E5600958FDD /* ExplosionOne.sks in Resources */ = {isa = PBXBuildFile; fileRef = CCDE1D5A2A1D7E5600958FDD /* ExplosionOne.sks */; };
+		CCDE1D5D2A1DEABC00958FDD /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDE1D5C2A1DEABC00958FDD /* HomeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +21,8 @@
 		CCDE1D4E2A1D622C00958FDD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CCDE1D502A1D622D00958FDD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CCDE1D532A1D622D00958FDD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		CCDE1D5A2A1D7E5600958FDD /* ExplosionOne.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionOne.sks; sourceTree = "<group>"; };
+		CCDE1D5C2A1DEABC00958FDD /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +57,8 @@
 			children = (
 				CCDE1D4C2A1D622C00958FDD /* SpaceShooterApp.swift */,
 				CCDE1D4E2A1D622C00958FDD /* ContentView.swift */,
+				CCDE1D5C2A1DEABC00958FDD /* HomeView.swift */,
+				CCDE1D5A2A1D7E5600958FDD /* ExplosionOne.sks */,
 				CCDE1D502A1D622D00958FDD /* Assets.xcassets */,
 				CCDE1D522A1D622D00958FDD /* Preview Content */,
 			);
@@ -127,6 +133,7 @@
 			files = (
 				CCDE1D542A1D622D00958FDD /* Preview Assets.xcassets in Resources */,
 				CCDE1D512A1D622D00958FDD /* Assets.xcassets in Resources */,
+				CCDE1D5B2A1D7E5600958FDD /* ExplosionOne.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,6 +144,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CCDE1D5D2A1DEABC00958FDD /* HomeView.swift in Sources */,
 				CCDE1D4F2A1D622C00958FDD /* ContentView.swift in Sources */,
 				CCDE1D4D2A1D622C00958FDD /* SpaceShooterApp.swift in Sources */,
 			);
